@@ -6,12 +6,15 @@ Auteur : Wajih Khadraoui, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-05b)
+## État actuel (tag lab-06)
 
-- Back-office des catégories et des tags sous `/admin` (`CategoryController`, `TagController`), protégé par le middleware `writable`, avec Form Requests et messages flash.
-- Messages de validation en français (`lang/fr/validation.php`, `APP_LOCALE=fr`), avec des noms de champs lisibles et un message propre au slug des catégories et des tags.
-- Pages 404 et 503 affichées dans le layout du site (`resources/views/errors`), plus des pages « Article introuvable » et « Catégorie introuvable ».
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest`, `ErrorPagesTest` et `TagAdminTest` (52 tests).
+- Comptes écrits à la main : inscription (`/inscription`), connexion (`/connexion`) et déconnexion, avec `Hash::make`, `Auth::attempt` et la régénération de la session.
+- Colonne `role` (`author` par défaut, `admin`). Après `php artisan migrate:fresh --seed`, le compte de démonstration `test@example.com` (mot de passe `password`) est administrateur.
+- Écritures et back-office réservés aux utilisateurs connectés (middleware `auth`) ; chaque nouvel article est attaché à son auteur.
+- Gate `manage-categories` : seuls les administrateurs gèrent les catégories.
+- `PostPolicy` : un auteur modifie et supprime ses articles, un administrateur tous les articles.
+- Défi : `/mes-articles` liste les articles de l'utilisateur connecté (brouillons compris) et la case « Se souvenir de moi » crée un cookie `remember_web_...`.
+- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest`, `ErrorPagesTest`, `AuthTest` et `AuthorizationTest` (67 tests).
 
 ## Données de démonstration
 
@@ -47,6 +50,12 @@ Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. A
 | GET | `/admin/tags/{tag}/edit` | `admin.tags.edit` | `TagController@edit` |
 | PUT\|PATCH | `/admin/tags/{tag}` | `admin.tags.update` | `TagController@update` |
 | DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
+| GET | `/inscription` | `register` | `Auth\RegisterController@create` |
+| POST | `/inscription` | `register.store` | `Auth\RegisterController@store` |
+| GET | `/connexion` | `login` | `Auth\LoginController@create` |
+| POST | `/connexion` | `login.store` | `Auth\LoginController@store` |
+| POST | `/deconnexion` | `logout` | `Auth\LoginController@destroy` |
+| GET | `/mes-articles` | `my-posts` | `PostController@myPosts` |
 
 ## Prérequis
 
@@ -155,3 +164,10 @@ Back-office des catégories et des tags, messages de validation en français, pa
 ![Page 404 du site pour une adresse inconnue](screenshots/s10-404.png)
 ![Back-office des catégories](screenshots/s10-admin.png)
 ![Suite de tests Pest](screenshots/s10-tests.png)
+
+### Session 11
+
+Connexion, rôles et autorisations : navigation d'un utilisateur connecté et page 403 pour un auteur.
+
+![Barre de navigation d'un utilisateur connecté, avec le message « Vous êtes connecté. »](screenshots/s11-connexion.png)
+![Page 403 quand un auteur ouvre la modification de l'article d'un autre auteur](screenshots/s11-interdit.png)
