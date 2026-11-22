@@ -6,5 +6,5 @@
             Corrigez les champs signalés, puis envoyez à nouveau.
         </x-alert>
     @endif
-    <x-post-form />
+    <x-post-form :categories="$categories" :tags="$tags" />
 </x-layout>
