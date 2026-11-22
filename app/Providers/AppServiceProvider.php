@@ -23,7 +23,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::preventLazyLoading(! app()->isProduction());
+
+        Gate::before(function (User $user, string $ability) {
+            if (! $user->isAdmin() || $ability === 'update-role') {
+                return null;
+            }
+
+            return true;
+        });
+
         Gate::define('manage-categories', fn (User $user) => $user->isAdmin());
         Gate::define('manage-tags', fn (User $user) => $user->isAdmin());
+        Gate::define('manage-users', fn (User $user) => $user->isAdmin());
     }
 }

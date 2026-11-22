@@ -1,0 +1,5 @@
+# Session 12 - Défi
+1. Pourquoi role n'est-il pas dans #[Fillable], et comment votre contrôleur le modifie-t-il quand même ?
+`role` est volontairement hors de `#[Fillable]` pour empêcher une affectation de masse venue d'un formulaire d'inscription ou d'URL : un visiteur ne peut pas se promouvoir administrateur. Le contrôleur part d'une valeur validée par `UpdateUserRoleRequest` (`in:author,admin`), l'assigne explicitement à `$user->role`, puis appelle `$user->save()` ; le passage par la Policy garantit en plus qu'un administrateur ne modifie pas son propre rôle.
+2. Pourquoi le callback de Gate::before doit-il renvoyer null, et non false, pour un auteur ?
+`false` est un refus définitif : l'auteur serait alors interdit sur tout, y compris la modification de ses propres articles. `null` signifie « pas d'avis » et laisse Laravel poursuivre avec le Gate ou la Policy correspondante. Le callback renvoie aussi `null` pour la capacité `update-role`, afin que la règle « pas de changement de son propre rôle » ne soit pas contournée par le court-circuit administrateur.
