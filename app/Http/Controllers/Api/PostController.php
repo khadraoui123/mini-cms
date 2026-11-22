@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\IndexPostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 
@@ -19,6 +20,8 @@ class PostController extends Controller
         $perPage = (int) ($request->validated('per_page') ?? 5);
         $posts = Post::published()
             ->with('user', 'category', 'tags')
+            ->when($request->validated('category'), fn (Builder $query, string $slug) => $query->whereRelation('category', 'slug', $slug))
+            ->when($request->validated('tag'), fn (Builder $query, string $slug) => $query->whereRelation('tags', 'slug', $slug))
             ->latest('id')
             ->paginate($perPage)
             ->withQueryString();
