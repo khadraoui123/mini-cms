@@ -6,15 +6,13 @@ Auteur : Wajih Khadraoui, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-04b)
+## État actuel (tag lab-05)
 
-- Modèles `Category` et `Tag` reliés à `Post` : un article a une catégorie et un auteur (1:N) et plusieurs tags (N:N, table pivot `post_tag`).
-- Fabriques `PostFactory` (état `published()`), `CategoryFactory`, `TagFactory` et seeders pour un jeu de données réaliste.
-- Chargement anticipé avec `with()` ; `Model::preventLazyLoading()` signale tout problème N+1 hors production.
-- Formulaire article : liste déroulante de catégories validée et cases à cocher pour les tags, enregistrées avec `sync()`.
-- Pages publiques par catégorie (`/posts/categorie/{category:slug}`) et par tag (`/posts/tag/{tag:slug}`), limitées aux articles publiés.
-- Accueil : compteurs d'articles publiés par catégorie et par tag avec `withCount()`, et tags populaires filtrés.
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest` et `PostTaxonomyTest` (30 tests).
+- Validation des articles dans `StorePostRequest` et `UpdatePostRequest` (`$request->validated()`) : plus aucune règle dans le contrôleur.
+- Messages flash après création, modification, suppression et publication, affichés par le layout avec `x-alert`.
+- Middleware `EnsureSiteIsWritable` (alias `writable`) : avec `SITE_READ_ONLY=true` dans `.env`, les requêtes d'écriture reçoivent une erreur 503 et un bandeau d'avertissement s'affiche sur toutes les pages.
+- Page « Article introuvable » (404) pour un article inexistant, rendue depuis `withExceptions` dans `bootstrap/app.php` ; les autres 404 gardent la page standard.
+- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest` et `PostFeedbackTest` (36 tests).
 
 ## Données de démonstration
 
@@ -132,3 +130,8 @@ Ouvrir ensuite http://localhost:8000 (adresse de l'application, différente de l
 ![Page d'une catégorie](screenshots/s08-page-categorie.png)
 ![Page d'un tag](screenshots/s08-page-tag.png)
 ![Suite de tests Pest](screenshots/s08-tests.png)
+
+### Session 09
+
+![Page d'un article avec le message flash « Article créé. »](screenshots/s09-message-flash.png)
+![Page Article introuvable pour un identifiant inexistant](screenshots/s09-article-introuvable.png)
