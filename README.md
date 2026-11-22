@@ -6,15 +6,14 @@ Auteur : Wajih Khadraoui, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-06)
+## État actuel (tag lab-06b)
 
-- Comptes écrits à la main : inscription (`/inscription`), connexion (`/connexion`) et déconnexion, avec `Hash::make`, `Auth::attempt` et la régénération de la session.
-- Colonne `role` (`author` par défaut, `admin`). Après `php artisan migrate:fresh --seed`, le compte de démonstration `test@example.com` (mot de passe `password`) est administrateur.
-- Écritures et back-office réservés aux utilisateurs connectés (middleware `auth`) ; chaque nouvel article est attaché à son auteur.
-- Gate `manage-categories` : seuls les administrateurs gèrent les catégories.
-- `PostPolicy` : un auteur modifie et supprime ses articles, un administrateur tous les articles.
-- Défi : `/mes-articles` liste les articles de l'utilisateur connecté (brouillons compris) et la case « Se souvenir de moi » crée un cookie `remember_web_...`.
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest`, `PostTaxonomyTest`, `PostFeedbackTest`, `CategoryAdminTest`, `ErrorPagesTest`, `AuthTest` et `AuthorizationTest` (67 tests).
+- Middleware `admin` (`App\Http\Middleware\EnsureUserIsAdmin`) sur tout `/admin` : un auteur reçoit 403 « Réservé aux administrateurs. ».
+- Gate `manage-tags`, comme `manage-categories` : contrôleur, Form Requests et menu.
+- Brouillons protégés : `PostPolicy::view` et le scope `visibleTo` ; un brouillon n'est visible que par son auteur et les administrateurs.
+- Défi : gestion des rôles sous `/admin/utilisateurs` (14 routes admin), `UserPolicy` interdisant à un admin de changer son propre rôle et un `Gate::before` qui laisse passer les administrateurs.
+- Tests d'autorisation : `AdminAccessTest` (7 tests), `PostVisibilityTest` (5 tests), `UserRoleTest` (2 tests), en plus des fichiers de la session 11 (81 tests au total).
+- Comparaison écrite avec le starter kit Livewire (section ci-dessous).
 
 ## Données de démonstration
 
@@ -50,6 +49,8 @@ Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. A
 | GET | `/admin/tags/{tag}/edit` | `admin.tags.edit` | `TagController@edit` |
 | PUT\|PATCH | `/admin/tags/{tag}` | `admin.tags.update` | `TagController@update` |
 | DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
+| GET | `/admin/utilisateurs` | `admin.users.index` | `UserController@index` |
+| PATCH | `/admin/utilisateurs/{user}/role` | `admin.users.role` | `UserController@updateRole` |
 | GET | `/inscription` | `register` | `Auth\RegisterController@create` |
 | POST | `/inscription` | `register.store` | `Auth\RegisterController@store` |
 | GET | `/connexion` | `login` | `Auth\LoginController@create` |
@@ -171,6 +172,13 @@ Connexion, rôles et autorisations : navigation d'un utilisateur connecté et pa
 
 ![Barre de navigation d'un utilisateur connecté, avec le message « Vous êtes connecté. »](screenshots/s11-connexion.png)
 ![Page 403 quand un auteur ouvre la modification de l'article d'un autre auteur](screenshots/s11-interdit.png)
+
+### Session 12
+
+Zone `/admin` protégée par le middleware `admin` et menu réduit pour un auteur.
+
+![Page 403 « Réservé aux administrateurs. » pour un auteur ouvrant /admin/tags](screenshots/s12-admin-interdit.png)
+![Navigation d'un auteur : ni Catégories, ni Tags, ni Utilisateurs](screenshots/s12-menu-auteur.png)
 
 ## Comparaison avec le starter kit Livewire
 
