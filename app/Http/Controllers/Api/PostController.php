@@ -18,7 +18,7 @@ class PostController extends Controller
     {
         $perPage = (int) ($request->validated('per_page') ?? 5);
         $posts = Post::published()
-            ->with('user', 'category')
+            ->with('user', 'category', 'tags')
             ->latest('id')
             ->paginate($perPage)
             ->withQueryString();
@@ -33,6 +33,6 @@ class PostController extends Controller
     {
         Gate::authorize('view', $post);
 
-        return new PostResource($post->load('user', 'category'));
+        return new PostResource($post->load('user', 'category', 'tags'));
     }
 }
