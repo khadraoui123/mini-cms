@@ -171,3 +171,20 @@ Connexion, rôles et autorisations : navigation d'un utilisateur connecté et pa
 
 ![Barre de navigation d'un utilisateur connecté, avec le message « Vous êtes connecté. »](screenshots/s11-connexion.png)
 ![Page 403 quand un auteur ouvre la modification de l'article d'un autre auteur](screenshots/s11-interdit.png)
+
+## Comparaison avec le starter kit Livewire
+
+| Critère | Mini-CMS (authentification manuelle) | Starter kit Livewire |
+|---|---|---|
+| Routes d'authentification | Écrites à la main dans `routes/web.php` (groupes `guest` et `auth`) | Enregistrées par le paquet Fortify, absentes de `routes/web.php` |
+| Inscription | `Auth\RegisterController` + `RegisterRequest` | `app/Actions/Fortify/CreateNewUser.php` + `resources/views/pages/auth/register.blade.php` |
+| Connexion | `Auth\LoginController::store` + `LoginRequest` | Contrôleur Fortify + `resources/views/pages/auth/login.blade.php` |
+| Déconnexion | `Auth\LoginController::destroy` | Route Fortify + `app/Livewire/Actions/Logout.php` |
+| Limitation des tentatives | Aucune | 5 tentatives/minute/e-mail + IP (`app/Providers/FortifyServiceProvider.php`) |
+| Mot de passe oublié | Absent | `Features::resetPasswords()` |
+| Vérification de l'e-mail | Absente | `Features::emailVerification()` + `MustVerifyEmail` + middleware `verified` |
+| Double authentification | Absente | `Features::twoFactorAuthentication()` et `Features::passkeys()` |
+| Rôles et autorisations | Colonne `role` + Gates + `PostPolicy` + middleware `admin` | Absents du kit |
+| Tests | `AuthTest` / `AuthorizationTest` / `AdminAccessTest` / `PostVisibilityTest` | 10 fichiers de tests dans `tests/Feature` (Auth, Settings, Dashboard) |
+
+Ce que je garderais du kit dans un vrai projet : la limitation des tentatives et la réinitialisation du mot de passe, qui sont sensibles et fastidieuses à réimplémenter correctement à la main. Je garderais aussi la vérification d'e-mail et la double authentification, tout en conservant mes Gates et ma `PostPolicy` qui portent les règles métier de Mini-CMS.
