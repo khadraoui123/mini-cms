@@ -6,12 +6,15 @@ Auteur : Wajih Khadraoui, groupe MDW32.
 
 Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication : pages publiques, back-office authentifié, API JSON et tests Pest. Chaque session se termine par un tag Git (`lab-01`, `lab-01b`, puis un tag par session).
 
-## État actuel (tag lab-04)
+## État actuel (tag lab-04b)
 
 - Modèles `Category` et `Tag` reliés à `Post` : un article a une catégorie et un auteur (1:N) et plusieurs tags (N:N, table pivot `post_tag`).
 - Fabriques `PostFactory` (état `published()`), `CategoryFactory`, `TagFactory` et seeders pour un jeu de données réaliste.
 - Chargement anticipé avec `with()` ; `Model::preventLazyLoading()` signale tout problème N+1 hors production.
-- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest` et section « Dans la même catégorie ».
+- Formulaire article : liste déroulante de catégories validée et cases à cocher pour les tags, enregistrées avec `sync()`.
+- Pages publiques par catégorie (`/posts/categorie/{category:slug}`) et par tag (`/posts/tag/{tag:slug}`), limitées aux articles publiés.
+- Accueil : compteurs d'articles publiés par catégorie et par tag avec `withCount()`, et tags populaires filtrés.
+- Tests Pest : `PostPagesTest`, `PostWriteTest`, `PostRelationsTest` et `PostTaxonomyTest` (30 tests).
 
 ## Données de démonstration
 
@@ -26,6 +29,8 @@ Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. A
 | GET | `/heure` | `time` | `PageController@time` |
 | GET | `/posts` | `posts.index` | `PostController@index` |
 | GET | `/posts/archive/{year}` | `posts.archive` | `PostController@archive` |
+| GET | `/posts/categorie/{category:slug}` | `posts.category` | `PostController@byCategory` |
+| GET | `/posts/tag/{tag:slug}` | `posts.tag` | `PostController@byTag` |
 | GET | `/posts/create` | `posts.create` | `PostController@create` |
 | POST | `/posts` | `posts.store` | `PostController@store` |
 | GET | `/posts/{post}` | `posts.show` | `PostController@show` |
@@ -120,3 +125,10 @@ Ouvrir ensuite http://localhost:8000 (adresse de l'application, différente de l
 ![Liste des articles avec leur catégorie, leur auteur et leurs tags](screenshots/s07-liste-relations.png)
 ![Page d'un article avec ses tags et les articles de la même catégorie](screenshots/s07-detail-tags.png)
 ![Suite de tests Pest](screenshots/s07-tests.png)
+
+### Session 08
+
+![Formulaire avec catégorie et tags](screenshots/s08-formulaire-relations.png)
+![Page d'une catégorie](screenshots/s08-page-categorie.png)
+![Page d'un tag](screenshots/s08-page-tag.png)
+![Suite de tests Pest](screenshots/s08-tests.png)
