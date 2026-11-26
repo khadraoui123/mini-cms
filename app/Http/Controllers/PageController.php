@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
@@ -37,11 +38,18 @@ class PageController extends Controller
         ]);
     }
 
-    public function time(): View
+    public function dashboard(): View
     {
-        return view('heure', [
-            'heure' => now()->format('H:i'),
-            'date' => now()->format('d/m/Y'),
+        return view('dashboard', [
+            'postsCount' => Post::count(),
+            'usersCount' => User::count(),
+            'categoriesCount' => Category::count(),
+            'tagsCount' => Tag::count(),
+            'latestPosts' => Post::published()
+                ->with('user', 'category', 'tags')
+                ->latest('published_at')
+                ->take(3)
+                ->get(),
         ]);
     }
 }

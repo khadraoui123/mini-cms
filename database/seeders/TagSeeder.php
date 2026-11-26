@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Tag;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TagSeeder extends Seeder
@@ -14,12 +13,16 @@ class TagSeeder extends Seeder
     public function run(): void
     {
         Tag::factory()->createMany([
-            ['name' => 'Débutant', 'slug' => 'debutant'],
-            ['name' => 'Astuce', 'slug' => 'astuce'],
+            ['name' => 'PHP', 'slug' => 'php'],
+            ['name' => 'Laravel', 'slug' => 'laravel'],
+            ['name' => 'Eloquent', 'slug' => 'eloquent'],
+            ['name' => 'Tailwind', 'slug' => 'tailwindcss'],
             ['name' => 'Sécurité', 'slug' => 'securite'],
             ['name' => 'Performance', 'slug' => 'performance'],
             ['name' => 'Tests', 'slug' => 'tests'],
-            ['name' => 'Blade', 'slug' => 'blade'],
+            ['name' => 'API', 'slug' => 'api'],
+            ['name' => 'JavaScript', 'slug' => 'javascript'],
+            ['name' => 'SQL', 'slug' => 'sql'],
         ]);
     }
 }

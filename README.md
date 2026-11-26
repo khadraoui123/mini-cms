@@ -18,13 +18,14 @@ Mini-CMS évoluera au fil du semestre vers une petite plateforme de publication 
 
 Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. Attention : cette commande vide la base avant de la remplir.
 
+Comptes de démonstration (mot de passe `password`) : `admin@mini-cms.test` (administrateur) et `camille@mini-cms.test`, `karim@mini-cms.test`, `sofia@mini-cms.test`, `youssef@mini-cms.test` (auteurs).
+
 ## Routes disponibles
 
 | Méthode | URI | Nom | Action |
 |---|---|---|---|
 | GET | `/` | `home` | `PageController@home` |
 | GET | `/a-propos` | `about` | `PageController@about` |
-| GET | `/heure` | `time` | `PageController@time` |
 | GET | `/posts` | `posts.index` | `PostController@index` |
 | GET | `/posts/archive/{year}` | `posts.archive` | `PostController@archive` |
 | GET | `/posts/categorie/{category:slug}` | `posts.category` | `PostController@byCategory` |
@@ -50,6 +51,7 @@ Après un clone, reconstruire la base avec `php artisan migrate:fresh --seed`. A
 | DELETE | `/admin/tags/{tag}` | `admin.tags.destroy` | `TagController@destroy` |
 | GET | `/admin/utilisateurs` | `admin.users.index` | `UserController@index` |
 | PATCH | `/admin/utilisateurs/{user}/role` | `admin.users.role` | `UserController@updateRole` |
+| DELETE | `/admin/utilisateurs/{user}` | `admin.users.destroy` | `UserController@destroy` |
 | GET | `/inscription` | `register` | `Auth\RegisterController@create` |
 | POST | `/inscription` | `register.store` | `Auth\RegisterController@store` |
 | GET | `/connexion` | `login` | `Auth\LoginController@create` |
@@ -199,6 +201,47 @@ API JSON en lecture seule testée dans Postman.
 
 ![Postman : POST /api/posts avec un jeton Bearer, onglet Body, réponse 201 Created](screenshots/s14-postman-201.png)
 ![Postman : PUT sur l'article d'un autre auteur, réponse 403](screenshots/s14-postman-403.png)
+
+### Session 15 — interface modernisée et gestion des utilisateurs
+
+Fond à dégradé animé, cartes d'authentification, page détail en deux colonnes, menu de profil et administration des comptes réservée à l'administrateur. Les articles d'un compte supprimé sont réassignés à l'administrateur connecté.
+
+#### Pages publiques
+
+![Accueil avec le fond à dégradé animé et le hero en parallaxe](screenshots/s15-accueil-mesh-anime.png)
+![Page À propos](screenshots/s15-a-propos.png)
+![Liste des articles avec les vignettes par catégorie](screenshots/s15-liste-articles.png)
+![Détail d'un article en deux colonnes avec métadonnées et articles liés](screenshots/s15-detail-article.png)
+![Page d'une catégorie](screenshots/s15-page-categorie.png)
+![Page d'un tag](screenshots/s15-page-tag.png)
+![Archives de l'année 2026](screenshots/s15-archive-2026.png)
+![Page 404 dans le layout du site](screenshots/s15-404.png)
+
+#### Authentification et combines d'auteur
+
+![Carte de connexion centrée](screenshots/s15-connexion.png)
+![Carte d'inscription centrée](screenshots/s15-inscription.png)
+![Tableau de bord d'un utilisateur connecté](screenshots/s15-tableau-de-bord.png)
+![Menu de profil d'un administrateur avec le lien « Gestion des utilisateurs »](screenshots/s15-menu-profil-admin.png)
+![Menu de profil d'un auteur : le lien d'administration est absent](screenshots/s15-menu-profil-auteur.png)
+![Page 403 « Réservé aux administrateurs. » pour un auteur](screenshots/s15-admin-interdit-auteur.png)
+![Mes articles](screenshots/s15-mes-articles.png)
+![Formulaire de création d'un article](screenshots/s15-nouvel-article.png)
+![Formulaire de modification d'un article](screenshots/s15-modifier-article.png)
+
+#### Administration des utilisateurs
+
+![Tableau des utilisateurs avec roles et boutons « Supprimer »](screenshots/s15-admin-utilisateurs.png)
+![Tableau des utilisateurs avec le menu de profil ouvert](screenshots/s15-admin-utilisateurs-menu.png)
+![Back-office des catégories](screenshots/s15-admin-categories.png)
+![Création d'une catégorie](screenshots/s15-admin-nouvelle-categorie.png)
+![Back-office des tags](screenshots/s15-admin-tags.png)
+![Création d'un tag](screenshots/s15-admin-nouveau-tag.png)
+
+#### API JSON
+
+![Réponse JSON de GET /api/posts?per_page=2](screenshots/s15-api-posts.png)
+![Réponse JSON de GET /api/categories](screenshots/s15-api-categories.png)
 
 ## Comparaison avec le starter kit Livewire
 

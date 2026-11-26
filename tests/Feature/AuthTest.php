@@ -55,3 +55,27 @@ it('logs out and shows a message', function () {
         ->assertSee('Vous êtes déconnecté.');
     $this->assertGuest();
 });
+
+it('renders the login form in a centered card with input icons', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('action="'.route('login.store').'"', false)
+        ->assertSee('min-h-screen items-center justify-center')
+        ->assertSee('rounded-2xl border border-gray-100 bg-white p-8 shadow-xl')
+        ->assertSee('fa-solid fa-envelope')
+        ->assertSee('fa-solid fa-lock')
+        ->assertSee('bg-linear-to-r from-indigo-500 to-purple-600')
+        ->assertSee('name="remember"', false);
+});
+
+it('renders the registration form with every required field', function () {
+    $this->get(route('register'))
+        ->assertOk()
+        ->assertSee('action="'.route('register.store').'"', false)
+        ->assertSee('name="name"', false)
+        ->assertSee('name="email"', false)
+        ->assertSee('name="password"', false)
+        ->assertSee('name="password_confirmation"', false)
+        ->assertSee('fa-solid fa-user')
+        ->assertSee('bg-linear-to-r from-indigo-500 to-purple-600');
+});

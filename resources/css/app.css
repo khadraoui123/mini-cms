@@ -1,9 +1,159 @@
 @import 'tailwindcss';
+@import '@fortawesome/fontawesome-free/css/fontawesome.css';
+@import '@fortawesome/fontawesome-free/css/solid.css';
+@import '@fortawesome/fontawesome-free/css/regular.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../resources/views/**/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --animate-fade-in: fade-in 0.5s ease-out backwards;
+    --animate-fade-in-up: fade-in-up 0.6s ease-out backwards;
+    --animate-glow: glow 2.5s ease-in-out infinite;
+
+    --animate-blob-indigo: float-blob 26s ease-in-out infinite;
+    --animate-blob-purple: float-blob-alt 30s ease-in-out infinite;
+    --animate-blob-rose: float-blob 24s ease-in-out infinite reverse;
+    --animate-blob-cyan: float-blob-alt 28s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes glow {
+    0%,
+    100% {
+        box-shadow: 0 4px 14px -2px rgba(79, 70, 229, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 10px 26px 2px rgba(139, 92, 246, 0.55);
+    }
+}
+
+@keyframes float-blob {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate3d(6%, -8%, 0) scale(1.12);
+    }
+
+    66% {
+        transform: translate3d(-5%, 6%, 0) scale(0.92);
+    }
+}
+
+@keyframes float-blob-alt {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate3d(-8%, -6%, 0) scale(1.15);
+    }
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translate3d(0, 12px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translate3d(0, 0, 0);
+    }
+}
+
+@keyframes shine {
+    to {
+        transform: translate3d(120%, 0, 0);
+    }
+}
+
+.anim-fade-up {
+    animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.anim-fade-in {
+    animation: fade-in 0.7s ease-out backwards;
+}
+
+.anim-scale-in {
+    animation: scale-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.shine {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.shine::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 25%, rgba(255, 255, 255, 0.45) 50%, transparent 75%);
+    transform: translate3d(-120%, 0, 0);
+}
+
+.shine-light::after {
+    background: linear-gradient(105deg, transparent 25%, rgba(99, 102, 241, 0.2) 50%, transparent 75%);
+}
+
+.shine:hover::after,
+.shine:focus-visible::after {
+    animation: shine 0.9s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

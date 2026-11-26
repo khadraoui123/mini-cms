@@ -6,7 +6,7 @@
     href="{{ route($to) }}"
     @if ($active) aria-current="page" @endif
     {{ $attributes->class([
-        'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+        'px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300',
         'bg-indigo-600 text-white' => $active,
         'text-gray-700 hover:bg-gray-100' => ! $active,
     ]) }}

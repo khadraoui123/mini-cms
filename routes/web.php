@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/a-propos', [PageController::class, 'about'])->name('about');
-Route::get('/heure', [PageController::class, 'time'])->name('time');
+Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
 Route::get('/posts/archive/{year}', [PostController::class, 'archive'])
     ->whereNumber('year')
     ->name('posts.archive');
@@ -39,6 +39,7 @@ Route::middleware('writable')->group(function () {
             Route::resource('tags', TagController::class)->except('show');
             Route::get('/utilisateurs', [UserController::class, 'index'])->name('users.index');
             Route::patch('/utilisateurs/{user}/role', [UserController::class, 'updateRole'])->name('users.role');
+            Route::delete('/utilisateurs/{user}', [UserController::class, 'destroy'])->name('users.destroy');
         });
     });
 

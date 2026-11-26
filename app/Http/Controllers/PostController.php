@@ -7,19 +7,33 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PostController extends Controller
 {
     public function index(Request $request): View
     {
+        $search = trim((string) $request->query('search', ''));
+        $categoryId = $request->integer('category_id');
+
         return view('posts.index', [
             'heading' => 'Tous les articles',
-            'posts' => Post::visibleTo($request->user())->with('user', 'category', 'tags')->latest('id')->paginate(4),
+            'posts' => Post::visibleTo($request->user())
+                ->with('user', 'category', 'tags')
+                ->when($search !== '', fn (Builder $query) => $query->where('title', 'like', "%{$search}%"))
+                ->when($categoryId > 0, fn (Builder $query) => $query->where('category_id', $categoryId))
+                ->latest('id')
+                ->paginate(4)
+                ->withQueryString(),
+            'categories' => Category::orderBy('name')->get(),
+            'search' => $search,
+            'categoryId' => $categoryId,
         ]);
     }
 
@@ -102,7 +116,10 @@ class PostController extends Controller
                 ->get()
             : collect();
 
-        return view('posts.show', compact('post', 'related'));
+        $wordCount = Str::wordCount($post->body);
+        $readingTime = max(1, (int) ceil($wordCount / 200));
+
+        return view('posts.show', compact('post', 'related', 'readingTime', 'wordCount'));
     }
 
     public function edit(Post $post): View
